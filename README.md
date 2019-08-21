@@ -18,22 +18,22 @@ To generate this readme: `node readme.js`
 
 - Install VirtualBox
 
- https://www.virtualbox.org/wiki/Downloads
+https://www.virtualbox.org/wiki/Downloads
 
 - Install the latest versions of Docker, Minikube, and Kubectl
 
- https://docs.docker.com/docker-for-mac/install/
- https://github.com/kubernetes/minikube/releases
- https://kubernetes.io/docs/tasks/tools/install-kubectl/
- 
+https://docs.docker.com/docker-for-mac/install/
+https://github.com/kubernetes/minikube/releases
+https://kubernetes.io/docs/tasks/tools/install-kubectl/
+
 - Install Helm
 
- `curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > get_helm.sh; chmod 700 get_helm.sh; ./get_helm.sh`
+`curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > get_helm.sh; chmod 700 get_helm.sh; ./get_helm.sh`
 
 - Clone this repository
 - To ensure you are starting with a clean slate, delete any previous minikube contexts.
 
- `minikube stop; minikube delete; sudo rm -rf ~/.minikube; sudo rm -rf ~/.kube`
+`minikube stop; minikube delete; sudo rm -rf ~/.minikube; sudo rm -rf ~/.kube`
 
 ## Tutorial Steps
 
@@ -50,6 +50,9 @@ Start up the Kubernetes cluster with Minikube, giving it some extra resources.
 Enable the Minikube add-ons Heapster and Ingress.
 
 `minikube addons enable heapster; minikube addons enable ingress`
+
+###type: ClusterIP 라고 되어 있는 부분을 type: NodePort 로 바꿉니다.
+`kubectl -n kube-system edit service kubernetes-dashboard`
 
 #### Step3
 
@@ -121,7 +124,7 @@ We’ve built the image, but before we can push it to the registry, we need to s
 
 Now run the proxy container from the newly created image. (Note that you may see some errors; this is normal as the commands are first making sure there are no previous instances running.)
 
-``docker stop socat-registry; docker rm socat-registry; docker run -d -e "REG_IP=`minikube ip`" -e "REG_PORT=30400" --name socat-registry -p 30400:5000 socat-registry``
+`` docker stop socat-registry; docker rm socat-registry; docker run -d -e "REG_IP=`minikube ip`" -e "REG_PORT=30400" --name socat-registry -p 30400:5000 socat-registry ``
 
 #### Step15
 
@@ -173,7 +176,7 @@ Once again we'll need to set up the Socat Registry proxy container to push image
 
 Run the proxy container from the image.
 
-``docker stop socat-registry; docker rm socat-registry; docker run -d -e "REG_IP=`minikube ip`" -e "REG_PORT=30400" --name socat-registry -p 30400:5000 socat-registry``
+`` docker stop socat-registry; docker rm socat-registry; docker run -d -e "REG_IP=`minikube ip`" -e "REG_PORT=30400" --name socat-registry -p 30400:5000 socat-registry ``
 
 #### Step4
 
@@ -203,7 +206,7 @@ Open the Jenkins UI in a web browser.
 
 Display the Jenkins admin password with the following command, and right-click to copy it.
 
-``kubectl exec -it `kubectl get pods --selector=app=jenkins --output=jsonpath={.items..metadata.name}` cat /var/jenkins_home/secrets/initialAdminPassword``
+`` kubectl exec -it `kubectl get pods --selector=app=jenkins --output=jsonpath={.items..metadata.name}` cat /var/jenkins_home/secrets/initialAdminPassword ``
 
 #### Step9
 
@@ -220,12 +223,13 @@ Before we create a pipeline, we first need to provision the Kubernetes Continuou
 #### Step12
 
 The following values must be entered precisely as indicated:
+
 - Kind: `Kubernetes configuration (kubeconfig)`
 - ID: `kenzan_kubeconfig`
 - Kubeconfig: `From a file on the Jenkins master`
 - specify the file path: `/var/jenkins_home/.kube/config`
 
-Finally click *Ok*.
+Finally click _Ok_.
 
 #### Step13
 
@@ -282,7 +286,7 @@ The crossword application is a multi-tier application whose services depend on e
 
 Now we're going to walk through an initial build of the monitor-scale application.
 
-``docker build -t 127.0.0.1:30400/monitor-scale:`git rev-parse --short HEAD` -f applications/monitor-scale/Dockerfile applications/monitor-scale``
+`` docker build -t 127.0.0.1:30400/monitor-scale:`git rev-parse --short HEAD` -f applications/monitor-scale/Dockerfile applications/monitor-scale ``
 
 #### Step6
 
@@ -294,13 +298,13 @@ Once again we'll need to set up the Socat Registry proxy container to push the m
 
 Run the proxy container from the newly created image.
 
-``docker stop socat-registry; docker rm socat-registry; docker run -d -e "REG_IP=`minikube ip`" -e "REG_PORT=30400" --name socat-registry -p 30400:5000 socat-registry``
+`` docker stop socat-registry; docker rm socat-registry; docker run -d -e "REG_IP=`minikube ip`" -e "REG_PORT=30400" --name socat-registry -p 30400:5000 socat-registry ``
 
 #### Step8
 
 Push the monitor-scale image to the registry.
 
-``docker push 127.0.0.1:30400/monitor-scale:`git rev-parse --short HEAD` ``
+`` docker push 127.0.0.1:30400/monitor-scale:`git rev-parse --short HEAD` ``
 
 #### Step9
 
@@ -324,7 +328,7 @@ Monitor-scale has the functionality to let us scale our puzzle app up and down t
 
 Create the monitor-scale deployment and the Ingress defining the hostname by which this service will be accessible to the other services.
 
-``sed 's#127.0.0.1:30400/monitor-scale:$BUILD_TAG#127.0.0.1:30400/monitor-scale:'`git rev-parse --short HEAD`'#' applications/monitor-scale/k8s/deployment.yaml | kubectl apply -f -``
+`` sed 's#127.0.0.1:30400/monitor-scale:$BUILD_TAG#127.0.0.1:30400/monitor-scale:'`git rev-parse --short HEAD`'#' applications/monitor-scale/k8s/deployment.yaml | kubectl apply -f - ``
 
 #### Step13
 
@@ -411,7 +415,7 @@ Enter the item name as "Puzzle-Service", click Pipeline, and click OK.
 
 #### Step4
 
-Under the Build Triggers section, select Poll SCM. For the Schedule, enter the the string H/5 * * * * which will poll the Git repo every 5 minutes for changes.
+Under the Build Triggers section, select Poll SCM. For the Schedule, enter the the string H/5 \* \* \* \* which will poll the Git repo every 5 minutes for changes.
 
 #### Step5
 
@@ -451,15 +455,14 @@ After it triggers, observe how the puzzle services disappear in the Kr8sswordz P
 
 Try clicking Submit to test that hits now register as white.
 
-
 ## Automated Scripts to Run Tutorial
 
 If you need to walk through the steps in the tutorial again (or more quickly), we’ve provided npm scripts that automate running the same commands in the separate parts of the Tutorial.
 
 - Install NodeJS.
 - Install the scripts.
-    - `cd ~/kubernetes-ci-cd`
-    - `npm install`
+  - `cd ~/kubernetes-ci-cd`
+  - `npm install`
 
 Begin the desired section:
 
@@ -471,7 +474,7 @@ Begin the desired section:
 ## LICENSE
 
 Copyright 2017 Kenzan, LLC <http://kenzan.com>
- 
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
