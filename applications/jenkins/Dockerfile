@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:lts
+FROM jenkins/jenkins:2.136
 USER root
 
 #Pre-Install Jenkins Plugins
@@ -20,7 +20,4 @@ RUN curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key a
 # Grant jenkins user group access to /var/run/docker.sock
 RUN addgroup --gid 1001 dsock
 RUN gpasswd -a jenkins dsock 
-
-
-
 USER jenkins
