@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:lts
+FROM jenkinsci/blueocean
 USER root
 
 #Pre-Install Jenkins Plugins
