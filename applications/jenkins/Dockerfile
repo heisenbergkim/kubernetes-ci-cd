@@ -21,8 +21,6 @@ RUN curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key a
 RUN addgroup --gid 1001 dsock
 RUN gpasswd -a jenkins dsock 
 
-RUN groupadd docker
-RUN usermod -aG docker jenkins
-RUN chmod root:docker /var/run/docker.sock
+
 
 USER jenkins
