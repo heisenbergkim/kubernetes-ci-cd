@@ -1,5 +1,9 @@
-node {
+pipeline {
+    agent any
 
+    environment {
+        FOO = "initial FOO env value"
+    }
     checkout scm
 
     env.DOCKER_API_VERSION="1.23"
@@ -14,18 +18,42 @@ node {
 
     mytag="${tag}"
     env.BUILD_TAG=mytag
+
+    stage("Build") {
+            steps {
+                script {
+                    sh "docker build -t ${imageName} applications/hello-kenzan"
+                }
+            }
+        }
+
+        stage("Push") {
+            steps {
+                echo "env.BAR is '${BAR}'" // prints: env.BAR is 'bar'
+                echo "FOO is '${FOO}'" // prints: FOO is 'initial FOO env value'
+                echo "env.FOO is '${env.FOO}'" // prints: env.FOO is 'initial FOO env value'
+                script {
+                    sh "docker push ${imageName}"
+                }
+            }
+        }
+
+        stage("Deploy") {
+            steps {
+                echo "FOO is '${FOO}'" // prints: FOO is 'test2'
+                echo "env.FOO is '${env.FOO}'" // prints: env.FOO is 'initial FOO env value'
+                echo "env.BAR is '${BAR}'" // prints: env.BAR is 'bar2'
+
+                script {
+                     sh "sed 's#__IMAGE__#'$BUILDIMG'#' applications/hello-kenzan/k8s/deployment.yaml | kubectl apply -f -"
+                }
+
+                echo "FOO is '${FOO}'" // prints: FOO is 'test3'
+            }
+        }
+
   
 
 
-    stage "Build"
     
-        sh "docker build -t ${imageName} applications/hello-kenzan"
-    
-    stage "Push"
-
-        sh "docker push ${imageName}"
-
-    stage "Deploy"
-
-        sh "sed 's#__IMAGE__#'$BUILDIMG'#' applications/hello-kenzan/k8s/deployment.yaml | kubectl apply -f -"
 }
