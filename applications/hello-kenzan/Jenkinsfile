@@ -22,7 +22,7 @@ pipeline {
     }
 
 
-    stage("Build") {
+    stage("Build-1") {
             steps {
                 script {
                     sh "docker build -t ${imageName} applications/hello-kenzan"
@@ -30,7 +30,7 @@ pipeline {
             }
         }
 
-        stage("Push") {
+        stage("Push-2") {
             steps {
                 echo "env.BAR is '${BAR}'" // prints: env.BAR is 'bar'
                 echo "FOO is '${FOO}'" // prints: FOO is 'initial FOO env value'
@@ -41,7 +41,7 @@ pipeline {
             }
         }
 
-        stage("Deploy") {
+        stage("Deploy-3") {
             steps {
                 echo "FOO is '${FOO}'" // prints: FOO is 'test2'
                 echo "env.FOO is '${env.FOO}'" // prints: env.FOO is 'initial FOO env value'
