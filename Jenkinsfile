@@ -7,7 +7,7 @@ node {
     sh "git rev-parse --short HEAD > commit-id"
 
     tag = readFile('commit-id').replace("\n", "").replace("\r", "")
-    appName = "hello-kenzan"
+    appName = "hello-eric"
     registryHost = "127.0.0.1:30400/"
     imageName = "${registryHost}${appName}:${tag}"
     mytag="${tag}"
@@ -24,7 +24,7 @@ node {
 
     stage "Build"
     
-        sh "docker build -t ${imageName} -f applications/hello-kenzan/Dockerfile applications/hello-kenzan"
+        sh "docker build -t ${imageName} -f applications/hello-eric/Dockerfile applications/hello-eric"
     
     stage "Push"
 
