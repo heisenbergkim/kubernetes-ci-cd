@@ -6,8 +6,8 @@ metadata:
     app: hello-eric
 spec:
   ports:
-    - port: 80
-      targetPort: 80
+    - port: 8080
+      targetPort: 8080
   selector:
     app: hello-eric
     tier: hello-eric
@@ -33,5 +33,5 @@ spec:
         - image: 127.0.0.1:30400/hello-eric:$BUILD_TAG
           name: hello-eric
           ports:
-            - containerPort: 80
+            - containerPort: 8080
               name: hello-eric
