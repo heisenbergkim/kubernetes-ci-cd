@@ -12,6 +12,10 @@ node {
     imageName = "${registryHost}${appName}:${tag}"
     env.BUILDIMG=imageName
 
+    environment {
+        BUILD_TAG=tag
+    }
+
     
     env.BUILD_TAG=tag
 
