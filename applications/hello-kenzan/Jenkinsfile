@@ -13,11 +13,11 @@ node {
     env.BUILDIMG=imageName
 
     environment {
-        $BUILD_TAG=tag
+        $BUILDIMG=tag
     }
 
-    
-    env.BUILD_TAG=tag
+    BUILDIMG=tag
+    env.BUILDIMG=tag
 
 
     stage "Build"
