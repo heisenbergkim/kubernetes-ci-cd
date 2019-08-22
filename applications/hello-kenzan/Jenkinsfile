@@ -12,12 +12,8 @@ node {
     imageName = "${registryHost}${appName}:${tag}"
     env.BUILDIMG=imageName
 
-    environment {
-        $BUILDIMG=tag
-    }
-
-    BUILDIMG=tag
-    env.BUILDIMG=tag
+    
+    env.BUILD_TAG=tag
 
 
     stage "Build"
@@ -30,5 +26,5 @@ node {
 
     stage "Deploy"
 
-        kubernetesDeploy configs: "applications/${appName}/k8s/*.yaml", kubeconfigId: 'kenzan_kubeconfig'
+        sh "sed 's#__IMAGE__#'$BUILDIMG'#' applications/hello-kenzan/k8s/deployment.yaml | kubectl apply -f -"
 }
