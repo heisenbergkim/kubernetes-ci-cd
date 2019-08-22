@@ -17,9 +17,7 @@ pipeline {
     mytag="${tag}"
     env.BUILD_TAG=mytag
 
-    environment {
-        FOO = mytag
-    }
+     def VAL = mytag
 
 
     stage("Build-1") {
