@@ -14,7 +14,7 @@ node {
 
     mytag="${tag}"
     env.MYTAG=mytag
-    MYTAG=tag
+  
 
 
     stage "Build"
