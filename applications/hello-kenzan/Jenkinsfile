@@ -12,8 +12,8 @@ node {
     imageName = "${registryHost}${appName}:${tag}"
     env.BUILDIMG=imageName
 
-    
-    env.MYTAG=tag
+    mytag="${tag}"
+    env.MYTAG=mytag
     MYTAG=tag
 
 
