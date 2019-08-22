@@ -13,7 +13,7 @@ node {
     env.BUILDIMG=imageName
 
     mytag="${tag}"
-    env.MYTAG=mytag
+    env.BUILD_TAG=mytag
   
 
 
