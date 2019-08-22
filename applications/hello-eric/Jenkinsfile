@@ -9,7 +9,7 @@ pipeline {
     sh "git rev-parse --short HEAD > commit-id"
 
     tag = readFile('commit-id').replace("\n", "").replace("\r", "")
-    appName = "hello-kenzan"
+    appName = "hello-eric"
     registryHost = "127.0.0.1:30400/"
     imageName = "${registryHost}${appName}:${tag}"
     env.BUILDIMG=imageName
@@ -25,7 +25,7 @@ pipeline {
     stage("Build-1") {
             steps {
                 script {
-                    sh "docker build -t ${imageName} applications/hello-kenzan"
+                    sh "docker build -t ${imageName} applications/hello-eric"
                 }
             }
         }
@@ -48,7 +48,7 @@ pipeline {
                 echo "env.BAR is '${BAR}'" // prints: env.BAR is 'bar2'
 
                 script {
-                     sh "sed 's#__IMAGE__#'$BUILD_TAG'#' applications/hello-kenzan/k8s/deployment.yaml | kubectl apply -f -"
+                     sh "sed 's#__IMAGE__#'$BUILD_TAG'#' applications/hello-eric/k8s/deployment.yaml | kubectl apply -f -"
                 }
 
                 echo "FOO is '${FOO}'" // prints: FOO is 'test3'
