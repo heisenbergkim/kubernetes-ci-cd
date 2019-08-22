@@ -17,7 +17,7 @@ pipeline {
     mytag="${tag}"
     env.BUILD_TAG=mytag
 
-    def VAL = mytag
+    env.ERIC=mytag
     
      
 
@@ -48,7 +48,7 @@ pipeline {
                 echo "env.BAR is '${BAR}'" // prints: env.BAR is 'bar2'
 
                 script {
-                     sh "sed 's#__IMAGE__#'$BUILD_TAG'#' applications/hello-kenzan/k8s/deployment.yaml | kubectl apply -f -"
+                     sh "sed 's#__IMAGE__#'$ERIC'#' applications/hello-kenzan/k8s/deployment.yaml | kubectl apply -f -"
                 }
 
                 echo "FOO is '${FOO}'" // prints: FOO is 'test3'
