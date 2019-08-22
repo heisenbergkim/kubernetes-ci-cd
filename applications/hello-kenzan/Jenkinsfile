@@ -1,9 +1,7 @@
 pipeline {
     agent any
 
-    environment {
-        FOO = "initial FOO env value"
-    }
+   
     checkout scm
 
     env.DOCKER_API_VERSION="1.23"
@@ -18,6 +16,11 @@ pipeline {
 
     mytag="${tag}"
     env.BUILD_TAG=mytag
+
+    environment {
+        FOO = mytag
+    }
+
 
     stage("Build") {
             steps {
