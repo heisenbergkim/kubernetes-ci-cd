@@ -14,8 +14,8 @@ node {
 
 
 
-    // mytag="${tag}"
-    // env.BUILD_TAG=mytag
+    mytag="${tag}"
+    env.BUILD_TAG=mytag
 
     // def VAL = mytag
     
