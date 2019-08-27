@@ -1,4 +1,4 @@
-def TAG = 'UNKNOWN'
+def mytag = 'UNKNOWN'
 
 pipeline {
     agent any
@@ -30,8 +30,6 @@ pipeline {
     
 
     env.BUILD_TAG=mytag
-    env.BUILD_TAG=tag
-
 
   
     
@@ -67,7 +65,7 @@ pipeline {
                 echo "env.BAR is '${BAR}'" // prints: env.BAR is 'bar2'
 
                 script {
-                     sh "sed 's#__IMAGE__#'${TAG}'#' applications/hello-eric/k8s/deployment.yaml | kubectl apply -f -"
+                    sh "sed 's#__IMAGE__#'${mytag}'#' applications/hello-eric/k8s/deployment.yaml | kubectl apply -f -"
                 }
 
                 echo "FOO is '${FOO}'" // prints: FOO is 'test3'
