@@ -30,7 +30,7 @@ spec:
         tier: my-app
     spec:
       containers:
-        - image: 127.0.0.1:30400/my-app:$TAG
+        - image: 127.0.0.1:30400/my-app:$BUILD_TAG
           name: my-app
           ports:
             - containerPort: 80
