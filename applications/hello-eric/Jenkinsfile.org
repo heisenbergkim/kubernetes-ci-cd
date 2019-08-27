@@ -1,0 +1,62 @@
+pipeline {
+    agent any
+
+   
+    checkout scm
+
+    env.DOCKER_API_VERSION="1.23"
+    
+    sh "git rev-parse --short HEAD > commit-id"
+
+    tag = readFile('commit-id').replace("\n", "").replace("\r", "")
+    appName = "hello-eric"
+    registryHost = "127.0.0.1:30400/"
+    imageName = "${registryHost}${appName}:${tag}"
+    env.BUILDIMG=imageName
+
+    mytag="${tag}"
+    env.BUILD_TAG=mytag
+
+    env.ERIC=mytag
+    
+     
+
+
+    stage("Build-1") {
+            steps {
+                script {
+                    sh "docker build -t ${imageName} applications/hello-eric"
+                }
+            }
+        }
+
+    stage("Push-2") {
+        steps {
+            echo "env.BAR is '${BAR}'" // prints: env.BAR is 'bar'
+            echo "FOO is '${FOO}'" // prints: FOO is 'initial FOO env value'
+            echo "env.FOO is '${env.FOO}'" // prints: env.FOO is 'initial FOO env value'
+            script {
+                sh "docker push ${imageName}"
+            }
+        }
+    }
+
+    stage("Deploy-3") {
+        steps {
+            echo "FOO is '${FOO}'" // prints: FOO is 'test2'
+            echo "env.FOO is '${env.FOO}'" // prints: env.FOO is 'initial FOO env value'
+            echo "env.BAR is '${BAR}'" // prints: env.BAR is 'bar2'
+
+            script {
+                    sh "sed 's#__IMAGE__#'$BUILD_TAG'#' applications/hello-eric/k8s/deployment.yaml | kubectl apply -f -"
+            }
+
+            echo "FOO is '${FOO}'" // prints: FOO is 'test3'
+        }
+    }
+
+  
+
+
+    
+}
