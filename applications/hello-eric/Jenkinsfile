@@ -1,3 +1,5 @@
+def TAG = 'UNKNOWN'
+
 pipeline {
     agent any
 
