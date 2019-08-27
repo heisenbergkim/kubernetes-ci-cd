@@ -1,33 +1,59 @@
 pipeline {
-  agent {
-    docker {
-      image 'node:6-alpine'
-      args '-p 3000:3000'
-    }
+    agent any
 
-  }
-  stages {
-    stage('Build') {
-      steps {
-        sh 'npm install'
-      }
-    }
-    stage('Test') {
-      environment {
-        CI = 'true'
-      }
-      steps {
-        sh './jenkins/scripts/test.sh'
-      }
-    }
-    stage('Deliver') {
-      steps {
-        sh '''./jenkins/scripts/deliver.sh
-'''
-        input 'Finished using the web site? (Click "Proceed" to continue)'
-        sh '''./jenkins/scripts/kill.sh
-'''
-      }
-    }
-  }
+   
+    checkout scm
+
+    env.DOCKER_API_VERSION="1.23"
+    
+    sh "git rev-parse --short HEAD > commit-id"
+
+    tag = readFile('commit-id').replace("\n", "").replace("\r", "")
+    appName = "my-app"
+    registryHost = "127.0.0.1:30400/"
+    imageName = "${registryHost}${appName}:${tag}"
+    env.BUILDIMG=imageName
+
+ 
+    
+     
+
+
+    stage("Build-1") {
+            steps {
+                script {
+                    sh "docker build -t ${imageName} applications/hello-eric"
+                }
+            }
+        }
+
+        stage("Push-2") {
+            steps {
+                echo "env.BAR is '${BAR}'" // prints: env.BAR is 'bar'
+                echo "FOO is '${FOO}'" // prints: FOO is 'initial FOO env value'
+                echo "env.FOO is '${env.FOO}'" // prints: env.FOO is 'initial FOO env value'
+                script {
+                    sh "docker push ${imageName}"
+                }
+            }
+        }
+
+        stage("Deploy-3") {
+            steps {
+                echo "FOO is '${FOO}'" // prints: FOO is 'test2'
+                echo "env.FOO is '${env.FOO}'" // prints: env.FOO is 'initial FOO env value'
+                echo "env.BAR is '${BAR}'" // prints: env.BAR is 'bar2'
+
+                script {
+                     sh "sed 's#__IMAGE__#'$BUILD_TAG'#' applications/hello-eric/k8s/deployment.yaml | kubectl apply -f -"
+                }
+
+                echo "FOO is '${FOO}'" // prints: FOO is 'test3'
+            }
+        }
+
+  
+
+
+    
 }
