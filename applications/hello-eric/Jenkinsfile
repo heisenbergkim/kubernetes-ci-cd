@@ -14,7 +14,8 @@ pipeline {
     imageName = "${registryHost}${appName}:${tag}"
     env.BUILDIMG=imageName
     mytag="${tag}"
-    env.BUILD_TAG=mytag
+    env.MY_TAG=mytag
+    
 
  
     
@@ -47,7 +48,7 @@ pipeline {
                 echo "env.BAR is '${BAR}'" // prints: env.BAR is 'bar2'
 
                 script {
-                     sh "sed 's#__IMAGE__#'$BUILD_TAG'#' applications/hello-eric/k8s/deployment.yaml | kubectl apply -f -"
+                     sh "sed 's#__IMAGE__#'$MY_TAG'#' applications/hello-eric/k8s/deployment.yaml | kubectl apply -f -"
                 }
 
                 echo "FOO is '${FOO}'" // prints: FOO is 'test3'
