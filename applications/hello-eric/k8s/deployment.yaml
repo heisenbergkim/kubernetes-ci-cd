@@ -33,5 +33,5 @@ spec:
         - image: 127.0.0.1:30400/my-app:$BUILD_TAG
           name: my-app
           ports:
-            - containerPort: 8080
+            - containerPort: 80
               name: my-app
