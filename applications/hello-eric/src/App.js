@@ -9,7 +9,12 @@ class App extends Component {
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Hello Eric Kim!!!..Welcome to React</h1>
+          <img src={logo} className="App-logo" alt="logo" />
+          <img src={logo} className="App-logo" alt="logo" />
+          <img src={logo} className="App-logo" alt="logo" />
+          <h1 className="App-title">
+            Hello Eric Kim!!!..Welcome to React JSSSSS
+          </h1>
         </header>
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
